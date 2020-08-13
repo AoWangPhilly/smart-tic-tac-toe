@@ -6,15 +6,15 @@ class TicTacToe
 {
 public:
     TicTacToe();
-    std::vector<std::vector<char> > getBoard();
-    void setBoard(std::vector<std::vector<char> >board);
+    std::vector<std::vector<char>> getBoard();
+    void setBoard(std::vector<std::vector<char>> board);
     void display();
+    bool isAvailable(char pos);
     void place(char pos, char mark);
     bool checkWin();
 
 private:
-    std::vector<std::vector<char> > board;
-    bool isAvailable(char pos);
+    std::vector<std::vector<char>> board;
 };
 
 #endif
