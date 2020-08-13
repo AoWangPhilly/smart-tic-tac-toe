@@ -2,6 +2,9 @@
 #include "TicTacToe.h"
 #include <vector>
 
+/**
+ * TicTacToe board class
+ */
 TicTacToe::TicTacToe()
 {
     std::vector<std::vector<char>> vect{{'1', '2', '3'},
@@ -20,6 +23,7 @@ void TicTacToe::setBoard(std::vector<std::vector<char>> board)
     this->board = board;
 }
 
+// Formats the board
 void TicTacToe::display()
 {
     int i = 0, j = 0;
@@ -37,6 +41,12 @@ void TicTacToe::display()
     std::cout << "     |     |     \n\n";
 }
 
+/**
+ * Checks to see if the position on board is available
+ * 
+ * @param pos is the position of the board 1-9
+ * @return whether position is available (true) or not (false)
+ */
 bool TicTacToe::isAvailable(char pos)
 {
     for (int i = 0, len = board.size(); i < len; ++i)
@@ -49,6 +59,12 @@ bool TicTacToe::isAvailable(char pos)
     return false;
 }
 
+/**
+ * Places a mark on a position of the board
+ * 
+ * @param pos is the position of the board 1-9
+ * @param mark is the mark on the board 'X' or 'O'
+ */
 void TicTacToe::place(char pos, char mark)
 {
     if (isAvailable(pos))
@@ -91,6 +107,11 @@ void TicTacToe::place(char pos, char mark)
     }
 }
 
+/**
+ * Checks to see if a player won
+ * 
+ * @return if the game should/should not go on
+ */
 bool TicTacToe::checkWin()
 {
     int j = 0;

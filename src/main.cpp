@@ -21,6 +21,7 @@ int main()
         while (!game.isAvailable(pos))
         {
             std::cout << "Position taken, try another spot!\n";
+            std::cin >> pos;
         }
         turns % 2 == 0 ? game.place(pos, 'X') : game.place(pos, 'O');
         game.display();
