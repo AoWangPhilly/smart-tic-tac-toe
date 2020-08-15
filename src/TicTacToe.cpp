@@ -114,11 +114,6 @@ void TicTacToe::place(char pos, char mark)
             break;
         }
     }
-    else
-    {
-        // Whenever spot is taken or not a position
-        std::cout << "Position at square " << pos << " is taken!\n";
-    }
 }
 
 /**
