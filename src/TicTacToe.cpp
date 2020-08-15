@@ -59,6 +59,20 @@ bool TicTacToe::isAvailable(char pos)
     return false;
 }
 
+bool TicTacToe::movesLeft()
+{
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            if (board[i][j] != 'X' && board[i][j] != 'O')
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 /**
  * Places a mark on a position of the board
  * 
