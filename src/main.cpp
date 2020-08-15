@@ -4,6 +4,7 @@
 #include "TicTacToe.h"
 #include <math.h>
 
+int scoring(TicTacToe board, char ai, char hu);
 int minMax(TicTacToe board, int depth, bool isMaximizing);
 char bestMove();
 
@@ -15,24 +16,13 @@ int main()
     TicTacToe game;
     game.display();
 
-    std::string winner;
     char pos;
-    bool draw = true;
-
     /*  Loops through the game and will end under two conditions:
      *  - There aren't any moves left if the board is full => tie
      *  - A player wins
      */
     for (int turn = 0; turn < 9; ++turn)
     {
-        // Breaks if won
-        if (game.checkWin())
-        {
-            draw = false;
-            winner = (turn - 1) % 2 == 0 ? "Player 1 (X)" : "Player 2 (O)";
-            break;
-        }
-
         // Even player (X), odd player (O)
         turn % 2 == 0
             ? std::cout << "Player 1 (X) make your move: \n"
@@ -48,34 +38,41 @@ int main()
 
         turn % 2 == 0 ? game.place(pos, 'X') : game.place(pos, 'O');
         game.display();
+
+        // Breaks if won
+        if (game.checkWin('X'))
+        {
+            std::cout << "Congratulations Player 1 (X)!\n";
+            break;
+        }
+        else if (game.checkWin('O'))
+        {
+            std::cout << "Congratulations Player 2 (O)!\n";
+            break;
+        }
     }
 
-    if (draw)
+    if (!game.checkWin('X') && !game.checkWin('O'))
     {
-        std::cout << "Tie Game! Try again?\n";
+        std::cout << "Tie game! Try again?";
     }
-    else
+    return 0;
+}
+int scoring(TicTacToe board, char ai, char hu)
+{
+    if (board.checkWin(ai))
     {
-        std::cout << "Congratulations " << winner << "!\n";
+        return 10;
     }
-
+    else if (board.checkWin(hu))
+    {
+        return -10;
+    }
     return 0;
 }
 
 int minMax(TicTacToe board, int depth, bool isMaximizing)
 {
-    if (!depth || board.checkWin())
-    {
-        return -1;
-    }
-    if (isMaximizing)
-    {
-        int maxEval = -INFINITY;
-    }
-    else
-    {
-        int minEval = INFINITY;
-    }
     return 0;
 }
 
