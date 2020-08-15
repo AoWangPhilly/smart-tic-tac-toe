@@ -11,7 +11,7 @@ TicTacToe::TicTacToe()
                                         {'4', '5', '6'},
                                         {'7', '8', '9'}};
     setBoard(vect);
-};
+}
 
 std::vector<std::vector<char>> TicTacToe::getBoard()
 {
@@ -112,35 +112,36 @@ void TicTacToe::place(char pos, char mark)
  * 
  * @return if the game should/should not go on
  */
-bool TicTacToe::checkWin()
+bool TicTacToe::checkWin(char mark)
 {
-    int j = 0;
     for (int i = 0, len = board.size(); i < len; ++i)
     {
         // Checks horizontal
-        if (board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 2])
+        if (board[i][0] == mark)
         {
-            std::cout << "horizontal\n";
-            return true;
-        }
-        // Checks vertical
-        else if (board[j][i] == board[j + 1][i] && board[j][i] == board[j + 2][i])
-        {
-            std::cout << "vertical\n";
-            return true;
+            if (board[i][0] == board[i][1] && board[i][0] == board[i][2])
+            {
+                return true;
+            }
+            // Checks vertical
+            else if (board[0][i] == board[1][i] && board[0][i] == board[2][i])
+            {
+                return true;
+            }
         }
     }
     // Checks left diagonal
-    if (board[0][0] == board[1][1] && board[0][0] == board[2][2])
+    if (board[0][0] == mark || board[0][2] == mark)
     {
-        std::cout << "left diag\n";
-        return true;
-    }
-    // Checks right diagonal
-    else if (board[0][2] == board[1][1] && board[0][2] == board[2][0])
-    {
-        std::cout << "right diag\n";
-        return true;
+        if (board[0][0] == board[1][1] && board[0][0] == board[2][2])
+        {
+            return true;
+        }
+        // Checks right diagonal
+        else if (board[0][2] == board[1][1] && board[0][2] == board[2][0])
+        {
+            return true;
+        }
     }
     return false;
 }

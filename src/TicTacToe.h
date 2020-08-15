@@ -11,7 +11,7 @@ public:
     void display();
     bool isAvailable(char pos);
     void place(char pos, char mark);
-    bool checkWin();
+    bool checkWin(char mark);
 
 private:
     std::vector<std::vector<char>> board;
