@@ -5,7 +5,7 @@
 #include <math.h>
 
 int scoring(TicTacToe board, char ai, char hu);
-int minMax(TicTacToe board, int depth, bool isMaximizing);
+int minMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing);
 char bestMove(TicTacToe board);
 
 int main()
@@ -83,7 +83,7 @@ int scoring(TicTacToe board, char ai, char hu)
     return 0;
 }
 
-int minMax(TicTacToe board, int depth, bool isMaximizing)
+int minMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing)
 {
     if (board.checkWin('O') || board.checkWin('X') || !board.movesLeft())
     {
@@ -98,8 +98,13 @@ int minMax(TicTacToe board, int depth, bool isMaximizing)
             if (board.isAvailable(i))
             {
                 board.place(i, 'X');
-                int score = minMax(board, depth + 1, !isMaximizing);
+                int score = minMax(board, depth + 1, alpha, beta, !isMaximizing);
                 bestVal = std::max(score, bestVal);
+                alpha = std::max(alpha, score);
+                if (beta <= alpha)
+                {
+                    break;
+                }
                 board.place(i, i);
             }
         }
@@ -113,8 +118,13 @@ int minMax(TicTacToe board, int depth, bool isMaximizing)
             if (board.isAvailable(i))
             {
                 board.place(i, 'O');
-                int score = minMax(board, depth + 1, !isMaximizing);
+                int score = minMax(board, depth + 1, alpha, beta, !isMaximizing);
                 bestVal = std::min(score, bestVal);
+                beta = std::min(beta, score);
+                if (beta <= alpha)
+                {
+                    break;
+                }
                 board.place(i, i);
             }
         }
@@ -131,7 +141,7 @@ char bestMove(TicTacToe board)
         if (board.isAvailable(i))
         {
             board.place(i, 'X');
-            int score = minMax(board, 0, false);
+            int score = minMax(board, 0, -INFINITY, INFINITY, false);
             board.place(i, i);
             if (score > bestVal)
             {

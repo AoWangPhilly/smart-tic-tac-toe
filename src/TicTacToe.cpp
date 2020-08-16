@@ -123,13 +123,12 @@ bool TicTacToe::checkWin(char mark)
     for (int i = 0; i < 3; ++i)
     {
         // Checks horizontal
-
         if (board[i][0] == mark && board[i][0] == board[i][1] && board[i][0] == board[i][2])
         {
             return true;
         }
-        // Checks vertical
 
+        // Checks vertical
         if (board[0][i] == mark && board[0][i] == board[1][i] && board[0][i] == board[2][i])
         {
             return true;
