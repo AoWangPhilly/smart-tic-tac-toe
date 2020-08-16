@@ -1,2 +1,2 @@
 # smart-tic-tac-toe
-Tic-Tac-Toe using Min-Max algorithm and Alpha-beta pruning
+Tic-Tac-Toe using MiniMax algorithm and Alpha-Beta pruning
