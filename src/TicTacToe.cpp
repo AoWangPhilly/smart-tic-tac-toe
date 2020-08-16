@@ -26,11 +26,11 @@ void TicTacToe::setBoard(std::vector<std::vector<char>> board)
 // Formats the board
 void TicTacToe::display()
 {
-    int i = 0, j = 0;
+
     std::cout << "     |     |     \n";
-    for (int i = 0, len = board.size(); i < len; ++i)
+    for (int i = 0; i < 3; ++i)
     {
-        std::cout << "  " << board[i][j] << "  |  " << board[i][j + 1] << "  |  " << board[i][j + 2]
+        std::cout << "  " << board[i][0] << "  |  " << board[i][1] << "  |  " << board[i][2]
                   << "\n";
         if (i < 2)
         {
@@ -49,7 +49,7 @@ void TicTacToe::display()
  */
 bool TicTacToe::isAvailable(char pos)
 {
-    for (int i = 0, len = board.size(); i < len; ++i)
+    for (int i = 0; i < 3; ++i)
     {
         if (std::find(board[i].begin(), board[i].end(), pos) != board[i].end())
         {
@@ -123,34 +123,34 @@ void TicTacToe::place(char pos, char mark)
  */
 bool TicTacToe::checkWin(char mark)
 {
-    for (int i = 0, len = board.size(); i < len; ++i)
+    for (int i = 0; i < 3; ++i)
     {
         // Checks horizontal
-        if (board[i][0] == mark)
+
+        if (board[i][0] == mark && board[i][0] == board[i][1] && board[i][0] == board[i][2])
         {
-            if (board[i][0] == board[i][1] && board[i][0] == board[i][2])
-            {
-                return true;
-            }
-            // Checks vertical
-            else if (board[0][i] == board[1][i] && board[0][i] == board[2][i])
-            {
-                return true;
-            }
+            return true;
+        }
+        // Checks vertical
+
+        if (board[0][i] == mark && board[0][i] == board[1][i] && board[0][i] == board[2][i])
+        {
+            return true;
         }
     }
     // Checks left diagonal
-    if (board[0][0] == mark || board[0][2] == mark)
+
+    if (board[0][0] == mark && board[0][0] == board[1][1] && board[0][0] == board[2][2])
     {
-        if (board[0][0] == board[1][1] && board[0][0] == board[2][2])
-        {
-            return true;
-        }
-        // Checks right diagonal
-        else if (board[0][2] == board[1][1] && board[0][2] == board[2][0])
-        {
-            return true;
-        }
+        return true;
     }
+
+    // Checks right diagonal
+
+    if (board[0][2] == mark && board[0][2] == board[1][1] && board[0][2] == board[2][0])
+    {
+        return true;
+    }
+
     return false;
 }
