@@ -5,7 +5,7 @@
 #include <math.h>
 
 int scoring(TicTacToe board, char ai, char hu);
-int minMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing);
+int miniMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing);
 char bestMove(TicTacToe board);
 
 int main()
@@ -70,6 +70,14 @@ int main()
     return 0;
 }
 
+/**
+ * Determines the score of the end result of the game
+ * 
+ * @param board is the current state of the game
+ * @param ai is the mark the AI player uses
+ * @param hu is the mark of the human player uses
+ * @returns the score of 10 when the AI wins, -10 when the human wins, and 0 for a tie
+ */
 int scoring(TicTacToe board, char ai, char hu)
 {
     if (board.checkWin(ai))
@@ -83,8 +91,19 @@ int scoring(TicTacToe board, char ai, char hu)
     return 0;
 }
 
-int minMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing)
+/**
+ * The implementation of the MiniMax algorithm with Alpha-Beta pruning
+ * 
+ * @param board is the current state of the game
+ * @param depth is the depth of the TicTacToe tree
+ * @param alpha initially -INF
+ * @param beta initially INF
+ * @param isMaximizing whether the player was maximizing win or minimizing loss
+ * @returns the score of each move
+ */
+int miniMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing)
 {
+    // Ends recursion when there's a victor or a tie
     if (board.checkWin('O') || board.checkWin('X') || !board.movesLeft())
     {
         return scoring(board, 'X', 'O');
@@ -93,12 +112,14 @@ int minMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing)
     if (isMaximizing)
     {
         int bestVal = -INFINITY;
+
+        // Loops through characters 1-9
         for (char i = 49; i < 58; ++i)
         {
             if (board.isAvailable(i))
             {
                 board.place(i, 'X');
-                int score = minMax(board, depth + 1, alpha, beta, !isMaximizing);
+                int score = miniMax(board, depth + 1, alpha, beta, !isMaximizing);
                 bestVal = std::max(score, bestVal);
                 alpha = std::max(alpha, score);
                 if (beta <= alpha)
@@ -113,12 +134,14 @@ int minMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing)
     else
     {
         int bestVal = INFINITY;
+
+        // Loops through characters 1-9
         for (char i = 49; i < 58; ++i)
         {
             if (board.isAvailable(i))
             {
                 board.place(i, 'O');
-                int score = minMax(board, depth + 1, alpha, beta, !isMaximizing);
+                int score = miniMax(board, depth + 1, alpha, beta, !isMaximizing);
                 bestVal = std::min(score, bestVal);
                 beta = std::min(beta, score);
                 if (beta <= alpha)
@@ -132,16 +155,24 @@ int minMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing)
     }
 }
 
+/**
+ * Returns the best move the AI should make
+ * 
+ * @param board is the current state of the board
+ * @return the best move the AI can make
+ */
 char bestMove(TicTacToe board)
 {
     int bestVal = -INFINITY;
     char move;
+
+    // Loops through characters 1-9
     for (char i = 49; i < 58; ++i)
     {
         if (board.isAvailable(i))
         {
             board.place(i, 'X');
-            int score = minMax(board, 0, -INFINITY, INFINITY, false);
+            int score = miniMax(board, 0, -INFINITY, INFINITY, false);
             board.place(i, i);
             if (score > bestVal)
             {
