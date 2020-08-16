@@ -81,38 +81,35 @@ bool TicTacToe::movesLeft()
  */
 void TicTacToe::place(char pos, char mark)
 {
-    if (isAvailable(pos))
+    switch (pos)
     {
-        switch (pos)
-        {
-        case '1':
-            board[0][0] = mark;
-            break;
-        case '2':
-            board[0][1] = mark;
-            break;
-        case '3':
-            board[0][2] = mark;
-            break;
-        case '4':
-            board[1][0] = mark;
-            break;
-        case '5':
-            board[1][1] = mark;
-            break;
-        case '6':
-            board[1][2] = mark;
-            break;
-        case '7':
-            board[2][0] = mark;
-            break;
-        case '8':
-            board[2][1] = mark;
-            break;
-        case '9':
-            board[2][2] = mark;
-            break;
-        }
+    case '1':
+        board[0][0] = mark;
+        break;
+    case '2':
+        board[0][1] = mark;
+        break;
+    case '3':
+        board[0][2] = mark;
+        break;
+    case '4':
+        board[1][0] = mark;
+        break;
+    case '5':
+        board[1][1] = mark;
+        break;
+    case '6':
+        board[1][2] = mark;
+        break;
+    case '7':
+        board[2][0] = mark;
+        break;
+    case '8':
+        board[2][1] = mark;
+        break;
+    case '9':
+        board[2][2] = mark;
+        break;
     }
 }
 

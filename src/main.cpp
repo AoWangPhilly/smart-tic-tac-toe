@@ -10,55 +10,63 @@ char bestMove(TicTacToe board);
 
 int main()
 {
-    // std::cout << "\n\n\tTic Tac Toe\n\n";
-    // std::cout << "Player 1 (X)  -  Player 2 (O)\n\n";
+    std::cout << "\n\n\tTic Tac Toe\n\n";
+    std::cout << "Player 1 (X)  -  Player 2 (O)\n\n";
 
     TicTacToe game;
-    // game.display();
+    game.display();
 
-    // char pos;
-    // /*  Loops through the game and will end under two conditions:
-    //  *  - There aren't any moves left if the board is full => tie
-    //  *  - A player wins
-    //  */
-    // for (int turn = 0; turn < 9; ++turn)
-    // {
-    //     // Even player (X), odd player (O)
-    //     turn % 2 == 0
-    //         ? std::cout << "Player 1 (X) make your move: \n"
-    //         : std::cout << "Player 2 (O) make your move: \n";
-    //     std::cin >> pos;
+    char pos;
+    /*  Loops through the game and will end under two conditions:
+     *  - There aren't any moves left if the board is full => tie
+     *  - A player wins
+     */
+    for (int turn = 0; turn < 9; ++turn)
+    {
 
-    //     // Loops continuously until player inputs unfilled space
-    //     while (!game.isAvailable(pos))
-    //     {
-    //         std::cout << "Position taken, try another spot!\n";
-    //         std::cin >> pos;
-    //     }
+        // Even player (X), odd player (O)
+        turn % 2 == 0
+            ? std::cout << "Player 1 (X) make your move: \n"
+            : std::cout << "Player 2 (O) make your move: \n";
 
-    //     turn % 2 == 0 ? game.place(pos, 'X') : game.place(pos, 'O');
-    //     game.display();
+        // std::cin >> pos;
+        if (turn % 2 != 0)
+        {
+            std::cin >> pos;
+        }
+        else
+        {
+            pos = bestMove(game);
+        }
 
-    //     // Breaks if won
-    //     if (game.checkWin('X'))
-    //     {
-    //         std::cout << "Congratulations Player 1 (X)!\n";
-    //         break;
-    //     }
-    //     else if (game.checkWin('O'))
-    //     {
-    //         std::cout << "Congratulations Player 2 (O)!\n";
-    //         break;
-    //     }
-    // }
+        // Loops continuously until player inputs unfilled space
+        while (!game.isAvailable(pos))
+        {
+            std::cout << "Position taken, try another spot!\n";
+            std::cin >> pos;
+        }
 
-    // if (!game.movesLeft())
-    // {
-    //     std::cout << "Tie game! Try again?";
-    // }
-    game.place('3','O');
-    game.place('5', 'O');
-    std::cout << bestMove(game) << std::endl;
+        turn % 2 == 0 ? game.place(pos, 'X') : game.place(pos, 'O');
+        game.display();
+
+        // Breaks if won
+        if (game.checkWin('X'))
+        {
+            std::cout << "Congratulations Player 1 (X)!\n";
+            break;
+        }
+        else if (game.checkWin('O'))
+        {
+            std::cout << "Congratulations Player 2 (O)!\n";
+            break;
+        }
+    }
+
+    if (!game.movesLeft() && !game.checkWin('X') && !game.checkWin('O'))
+    {
+        std::cout << "Tie game! Try again?";
+    }
+
     return 0;
 }
 
@@ -66,18 +74,18 @@ int scoring(TicTacToe board, char ai, char hu)
 {
     if (board.checkWin(ai))
     {
-        return 1;
+        return 10;
     }
     else if (board.checkWin(hu))
     {
-        return -1;
+        return -10;
     }
     return 0;
 }
 
 int minMax(TicTacToe board, int depth, bool isMaximizing)
 {
-    if ((board.checkWin('O') || board.checkWin('X')) && !board.movesLeft())
+    if (board.checkWin('O') || board.checkWin('X') || !board.movesLeft())
     {
         return scoring(board, 'X', 'O');
     }
@@ -90,9 +98,9 @@ int minMax(TicTacToe board, int depth, bool isMaximizing)
             if (board.isAvailable(i))
             {
                 board.place(i, 'X');
-                int score = minMax(board, depth + 1, false);
-                board.place(i, i);
+                int score = minMax(board, depth + 1, !isMaximizing);
                 bestVal = std::max(score, bestVal);
+                board.place(i, i);
             }
         }
         return bestVal;
@@ -105,9 +113,9 @@ int minMax(TicTacToe board, int depth, bool isMaximizing)
             if (board.isAvailable(i))
             {
                 board.place(i, 'O');
-                int score = minMax(board, depth + 1, true);
-                board.place(i, i);
+                int score = minMax(board, depth + 1, !isMaximizing);
                 bestVal = std::min(score, bestVal);
+                board.place(i, i);
             }
         }
         return bestVal;
