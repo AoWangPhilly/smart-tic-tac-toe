@@ -4,9 +4,8 @@
 #include "TicTacToe.h"
 #include <math.h>
 
-int scoring(TicTacToe board, char ai, char hu);
-int miniMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing);
 char bestMove(TicTacToe board);
+int miniMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing);
 
 int main()
 {
@@ -62,32 +61,11 @@ int main()
         }
     }
 
-    if (!game.movesLeft() && !game.checkWin('X') && !game.checkWin('O'))
+    if (game.noMovesLeft() && !game.checkWin('X') && !game.checkWin('O'))
     {
-        std::cout << "Tie game! Try again?";
+        std::cout << "Tie game! Try again?\n";
     }
 
-    return 0;
-}
-
-/**
- * Determines the score of the end result of the game
- * 
- * @param board is the current state of the game
- * @param ai is the mark the AI player uses
- * @param hu is the mark of the human player uses
- * @returns the score of 10 when the AI wins, -10 when the human wins, and 0 for a tie
- */
-int scoring(TicTacToe board, char ai, char hu)
-{
-    if (board.checkWin(ai))
-    {
-        return 10;
-    }
-    else if (board.checkWin(hu))
-    {
-        return -10;
-    }
     return 0;
 }
 
@@ -104,10 +82,12 @@ int scoring(TicTacToe board, char ai, char hu)
 int miniMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing)
 {
     // Ends recursion when there's a victor or a tie
-    if (board.checkWin('O') || board.checkWin('X') || !board.movesLeft())
-    {
-        return scoring(board, 'X', 'O');
-    }
+    if (board.checkWin('X'))
+        return 10;
+    else if (board.checkWin('O'))
+        return -10;
+    else if (board.noMovesLeft())
+        return 0;
 
     if (isMaximizing)
     {
@@ -116,16 +96,22 @@ int miniMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing)
         // Loops through characters 1-9
         for (char i = 49; i < 58; ++i)
         {
+            // Checks to see if space is free
             if (board.isAvailable(i))
             {
+                // Places the AI mark
                 board.place(i, 'X');
-                int score = miniMax(board, depth + 1, alpha, beta, !isMaximizing);
-                bestVal = std::max(score, bestVal);
-                alpha = std::max(alpha, score);
-                if (beta <= alpha)
-                {
+
+                // Calls miniMax recursively and choose max value
+                int val = miniMax(board, depth + 1, alpha, beta, false);
+                bestVal = std::max(val, bestVal);
+                alpha = std::max(alpha, val);
+
+                // Breaks if next nodes didn't need to be checked
+                if (alpha >= beta)
                     break;
-                }
+
+                // Reverse placement
                 board.place(i, i);
             }
         }
@@ -138,16 +124,22 @@ int miniMax(TicTacToe board, int depth, int alpha, int beta, bool isMaximizing)
         // Loops through characters 1-9
         for (char i = 49; i < 58; ++i)
         {
+            // Checks to see if space is free
             if (board.isAvailable(i))
             {
+                // Places the opponent mark
                 board.place(i, 'O');
-                int score = miniMax(board, depth + 1, alpha, beta, !isMaximizing);
-                bestVal = std::min(score, bestVal);
-                beta = std::min(beta, score);
+
+                // Calls miniMax recursively and choose min value
+                int val = miniMax(board, depth + 1, alpha, beta, true);
+                bestVal = std::min(val, bestVal);
+                beta = std::min(beta, val);
+
+                // Breaks if next notes didn't need to be checked
                 if (beta <= alpha)
-                {
                     break;
-                }
+
+                // Reverse placement
                 board.place(i, i);
             }
         }
@@ -172,13 +164,13 @@ char bestMove(TicTacToe board)
         if (board.isAvailable(i))
         {
             board.place(i, 'X');
-            int score = miniMax(board, 0, -INFINITY, INFINITY, false);
-            board.place(i, i);
-            if (score > bestVal)
+            int val = miniMax(board, 0, -INFINITY, INFINITY, false);
+            if (val > bestVal)
             {
-                bestVal = score;
+                bestVal = val;
                 move = i;
             }
+            board.place(i, i);
         }
     }
     return move;
