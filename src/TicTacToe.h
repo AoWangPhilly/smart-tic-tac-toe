@@ -10,12 +10,13 @@ public:
     void setBoard(std::vector<std::vector<char>> board);
     void display();
     bool isAvailable(char pos);
-    bool movesLeft();
+    bool noMovesLeft();
     void place(char pos, char mark);
     bool checkWin(char mark);
 
 private:
     std::vector<std::vector<char>> board;
+    bool checkThree(char a, char b, char c, char mark);
 };
 
 #endif

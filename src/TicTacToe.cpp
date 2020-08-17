@@ -49,29 +49,25 @@ void TicTacToe::display()
  */
 bool TicTacToe::isAvailable(char pos)
 {
-    for (int i = 0; i < 3; ++i)
+    int row = (pos - 49) / 3;
+    int col = (pos - 49) % 3;
+    if (board[row][col] != 'X' && board[row][col] != 'O')
     {
-        if (std::find(board[i].begin(), board[i].end(), pos) != board[i].end())
-        {
-            return true;
-        }
+        return true;
     }
     return false;
 }
 
-bool TicTacToe::movesLeft()
+bool TicTacToe::noMovesLeft()
 {
-    for (int i = 0; i < 3; ++i)
+    for (char pos = 49; pos < 58; ++pos)
     {
-        for (int j = 0; j < 3; ++j)
+        if (isAvailable(pos))
         {
-            if (board[i][j] != 'X' && board[i][j] != 'O')
-            {
-                return true;
-            }
+            return false;
         }
     }
-    return false;
+    return true;
 }
 /**
  * Places a mark on a position of the board
@@ -81,36 +77,14 @@ bool TicTacToe::movesLeft()
  */
 void TicTacToe::place(char pos, char mark)
 {
-    switch (pos)
-    {
-    case '1':
-        board[0][0] = mark;
-        break;
-    case '2':
-        board[0][1] = mark;
-        break;
-    case '3':
-        board[0][2] = mark;
-        break;
-    case '4':
-        board[1][0] = mark;
-        break;
-    case '5':
-        board[1][1] = mark;
-        break;
-    case '6':
-        board[1][2] = mark;
-        break;
-    case '7':
-        board[2][0] = mark;
-        break;
-    case '8':
-        board[2][1] = mark;
-        break;
-    case '9':
-        board[2][2] = mark;
-        break;
-    }
+    int row = (pos - 49) / 3;
+    int col = (pos - 49) % 3;
+    board[row][col] = mark;
+}
+
+bool TicTacToe::checkThree(char a, char b, char c, char mark)
+{
+    return a == b && b == c && a == mark;
 }
 
 /**
@@ -123,27 +97,27 @@ bool TicTacToe::checkWin(char mark)
     for (int i = 0; i < 3; ++i)
     {
         // Checks horizontal
-        if (board[i][0] == mark && board[i][0] == board[i][1] && board[i][0] == board[i][2])
+        if (checkThree(board[i][0], board[i][1], board[i][2], mark))
         {
             return true;
         }
 
         // Checks vertical
-        if (board[0][i] == mark && board[0][i] == board[1][i] && board[0][i] == board[2][i])
+        if (checkThree(board[0][i], board[1][i], board[2][i], mark))
         {
             return true;
         }
     }
     // Checks left diagonal
 
-    if (board[0][0] == mark && board[0][0] == board[1][1] && board[0][0] == board[2][2])
+    if (checkThree(board[0][0], board[1][1], board[2][2], mark))
     {
         return true;
     }
 
     // Checks right diagonal
 
-    if (board[0][2] == mark && board[0][2] == board[1][1] && board[0][2] == board[2][0])
+    if (checkThree(board[0][2], board[1][1], board[2][0], mark))
     {
         return true;
     }
