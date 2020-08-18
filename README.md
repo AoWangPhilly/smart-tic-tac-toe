@@ -1,5 +1,5 @@
 # smart-tic-tac-toe
-Tic-Tac-Toe using Min-Max algorithm and Alpha-beta pruning
+Tic-Tac-Toe using Min-Max algorithm and Alpha-Beta pruning
 
 ### [MiniMax Pseudocode from Wikipedia](https://en.wikipedia.org/wiki/Minimax)
 ```
@@ -40,3 +40,4 @@ function alphabeta(node, depth, α, β, maximizingPlayer) is
                 break (* α cut-off *)
         return value
 ```
+### [Sebastian Lague's MiniMax with Alpha-Beta pruning video](https://www.youtube.com/watch?v=l-hh51ncgDI)
