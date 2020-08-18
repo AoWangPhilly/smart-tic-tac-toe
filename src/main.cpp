@@ -5,7 +5,7 @@
 #include "TicTacToe.h"
 
 char makeBestMove(TicTacToe board);
-int miniMax(TicTacToe board, int depth, bool isMaximizing);
+int miniMax(TicTacToe board, int depth, bool isMaximizing, int alpha, int beta);
 
 int main()
 {
@@ -79,7 +79,7 @@ int main()
  * @param isMaximizing whether the player was maximizing win or minimizing loss
  * @returns the score of each move
  */
-int miniMax(TicTacToe board, int depth, bool isMaximizing)
+int miniMax(TicTacToe board, int depth, bool isMaximizing, int alpha, int beta)
 {
     if (board.checkWin('X'))
     {
@@ -101,7 +101,11 @@ int miniMax(TicTacToe board, int depth, bool isMaximizing)
             if (board.isAvailable(pos))
             {
                 board.place(pos, 'X');
-                bestVal = std::max(bestVal, miniMax(board, depth + 1, !isMaximizing));
+                int val = miniMax(board, depth + 1, false, alpha, beta);
+                bestVal = std::max(bestVal, val);
+                alpha = std::max(alpha, val);
+                if (beta <= alpha)
+                    break;
                 board.place(pos, pos);
             }
         }
@@ -115,7 +119,12 @@ int miniMax(TicTacToe board, int depth, bool isMaximizing)
             if (board.isAvailable(pos))
             {
                 board.place(pos, 'O');
-                bestVal = std::min(bestVal, miniMax(board, depth + 1, !isMaximizing));
+                int val = miniMax(board, depth + 1, true, alpha, beta);
+                bestVal = std::min(bestVal, val);
+                beta = std::min(beta, val);
+
+                if (beta <= alpha)
+                    break;
                 board.place(pos, pos);
             }
         }
@@ -138,7 +147,7 @@ char makeBestMove(TicTacToe board)
         if (board.isAvailable(pos))
         {
             board.place(pos, 'X');
-            int moveVal = miniMax(board, 0, false);
+            int moveVal = miniMax(board, 0, true, INFINITY, -INFINITY);
             board.place(pos, pos);
             if (moveVal > bestVal)
             {
