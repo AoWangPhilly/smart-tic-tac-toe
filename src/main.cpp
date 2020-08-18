@@ -5,7 +5,7 @@
 #include "TicTacToe.h"
 
 char makeBestMove(TicTacToe board);
-int miniMax(TicTacToe board, int depth, bool isMaximizing, int alpha, int beta);
+int miniMax(TicTacToe board, int depth, bool isMaximizing, int alpha=-INFINITY, int beta=INFINITY);
 
 int main()
 {
@@ -79,34 +79,34 @@ int main()
  * @param isMaximizing whether the player was maximizing win or minimizing loss
  * @returns the score of each move
  */
+
 int miniMax(TicTacToe board, int depth, bool isMaximizing, int alpha, int beta)
 {
-    if (board.checkWin('X'))
-    {
-        return 10;
-    }
-    else if (board.checkWin('O'))
-    {
-        return -10;
-    }
-    else if (board.noMovesLeft())
-    {
-        return 0;
-    }
+    // Base case, ends the recursion when end nodes reach a victor or a tie
+    if (board.checkWin('X')) return 10;
+    else if (board.checkWin('O')) return -10;
+    else if (board.noMovesLeft()) return 0;
+
     if (isMaximizing)
     {
         int bestVal = -INFINITY;
+
         for (char pos = 49; pos < 58; ++pos)
         {
+            // Loops through all possible positions 1-9
             if (board.isAvailable(pos))
             {
+                // Places AI mark, then calculates score for each position
                 board.place(pos, 'X');
-                int val = miniMax(board, depth + 1, false, alpha, beta);
+                int val = miniMax(board, depth + 1, !isMaximizing, alpha, beta);
                 bestVal = std::max(bestVal, val);
-                alpha = std::max(alpha, val);
-                if (beta <= alpha)
-                    break;
+
+                // Undo mark
                 board.place(pos, pos);
+
+                // Breaks whenever AI has move better earlier on
+                alpha = std::max(alpha, bestVal);
+                if (alpha >= beta) break;
             }
         }
         return bestVal;
@@ -114,18 +114,23 @@ int miniMax(TicTacToe board, int depth, bool isMaximizing, int alpha, int beta)
     else
     {
         int bestVal = INFINITY;
+
         for (char pos = 49; pos < 58; ++pos)
         {
+            // Loops through all possible positions 1-9
             if (board.isAvailable(pos))
             {
+                // Places player mark, then calculates score for each position
                 board.place(pos, 'O');
-                int val = miniMax(board, depth + 1, true, alpha, beta);
+                int val = miniMax(board, depth + 1, !isMaximizing, alpha, beta);
                 bestVal = std::min(bestVal, val);
-                beta = std::min(beta, val);
 
-                if (beta <= alpha)
-                    break;
+                // Undo mark
                 board.place(pos, pos);
+
+                // Places player mark, then calculates score for each position
+                beta = std::min(beta, bestVal);
+                if (beta <= alpha) break;
             }
         }
         return bestVal;
@@ -144,10 +149,11 @@ char makeBestMove(TicTacToe board)
     char bestMove;
     for (char pos = 49; pos < 58; ++pos)
     {
+        // Loops through all possible positions 1-9
         if (board.isAvailable(pos))
         {
             board.place(pos, 'X');
-            int moveVal = miniMax(board, 0, true, INFINITY, -INFINITY);
+            int moveVal = miniMax(board, 0, true);
             board.place(pos, pos);
             if (moveVal > bestVal)
             {
