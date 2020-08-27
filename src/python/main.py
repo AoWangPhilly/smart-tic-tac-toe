@@ -3,21 +3,17 @@
 '''
 
 from tictactoe import TicTacToe
-import re
 import sys
 
 
 def miniMax(board, depth, isMaximizing):
     winner = board.checkWin()
-    if winner == 'X':
-        return 10
-    elif winner == 'O':
-        return -10
-    elif winner == 'tie':
-        return 0
+    if winner == 'X': return 10
+    elif winner == 'O': return -10
+    elif winner == 'tie': return 0
 
     if isMaximizing:
-        bestVal = -sys.maxsize - 1
+        bestVal = float('-inf')
         for pos in board.getFreeSpace():
             spot = board.getBoard()[pos[0]][pos[1]]
             board.place('X', pos)
@@ -27,7 +23,7 @@ def miniMax(board, depth, isMaximizing):
             bestVal = max(bestVal, val)
         return bestVal
     else:
-        bestVal = sys.maxsize
+        bestVal = float('inf')
         for pos in board.getFreeSpace():
             spot = board.getBoard()[pos[0]][pos[1]]
             board.place('O', pos)
@@ -38,17 +34,46 @@ def miniMax(board, depth, isMaximizing):
         return bestVal
 
 
-def miniMaxAB(board, depth, isMaximizing, alpha=sys.maxsize, beta=-sys.maxsize - 1):
-    pass
+def miniMaxAB(board, depth, isMaximizing, alpha=float('-inf'), beta=float('inf')):
+    winner = board.checkWin()
+    if winner == 'X': return 10
+    elif winner == 'O': return -10
+    elif winner == 'tie': return 0
+
+    if isMaximizing:
+        bestVal = float('-inf')
+        for pos in board.getFreeSpace():
+            spot = board.getBoard()[pos[0]][pos[1]]
+            board.place('X', pos)
+            val = miniMaxAB(board, depth + 1, False, alpha, beta)
+            bestVal = max(bestVal, val)
+            board.place(spot, pos)
+
+            alpha = max(bestVal, alpha)
+            if alpha >= beta: break
+        return bestVal
+    else:
+        bestVal = float('inf')
+        for pos in board.getFreeSpace():
+            spot = board.getBoard()[pos[0]][pos[1]]
+            board.place('O', pos)
+            val = miniMaxAB(board, depth + 1, True, alpha, beta)
+            bestVal = min(bestVal, val)
+            board.place(spot, pos)
+
+            beta = min(bestVal, beta)
+            if alpha >= beta: break
+
+        return bestVal
 
 
-def getBestMove(board):
-    bestVal = -sys.maxsize - 1
+def getBestMove(board, ab=False):
+    bestVal = float('-inf')
     
     for pos in board.getFreeSpace():
         spot = board.getBoard()[pos[0]][pos[1]]
         board.place('X', pos)
-        moveVal = miniMax(board, 0, False)
+        moveVal = miniMaxAB(board, 0, False) if ab else miniMax(board, 0, False)
         board.place(spot, pos)
         if moveVal > bestVal:
             bestMove = pos
@@ -57,15 +82,13 @@ def getBestMove(board):
     return bestMove
 
 
-def getBestMoveAB(board):
-    pass
-
 
 if __name__ == '__main__':
     game = TicTacToe()
     print(game)
     for turn in range(9):
-        pos = '{} {}'.format(getBestMove(game)[0], getBestMove(game)[1]) if turn % 2 == 0 else input(
+        bestPos = getBestMove(game, ab=True)
+        pos = '{} {}'.format(bestPos[0], bestPos[1]) if turn % 2 == 0 else input(
             'Make your move, Player 2 (O), i.e. "0 0": ')
 
         pos = tuple(map(int, pos.split(' '))) 
@@ -79,9 +102,11 @@ if __name__ == '__main__':
         print(game)
         won = game.checkWin()
         if won:
-            print('Congratulations Player 1 (X)') if won == 'X' else print(
-                'Congratulations Player 2 (O)')
+            if won == 'X':
+                print('Congratulations Player 1 (X)') 
+            elif won == 'O': 
+                print('Congratulations Player 2 (O)')
             break
-    else:
-        if not game.movesLeft():
-            print('Tie game!! Try again? :D')
+
+    if game.checkWin() == 'tie':
+        print('Tie game!! Try again? :D')
