@@ -1,5 +1,7 @@
 '''
-
+description: main.py
+author: ao wang
+date: 08/27/2020
 '''
 
 from tictactoe import TicTacToe
